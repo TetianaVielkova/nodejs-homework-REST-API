@@ -1,21 +1,17 @@
 const { schema } = require('../helpers/validations');
-const { addContact } = require('../models/contacts')
+const { catchAsync } = require('../helpers/catchAsync');
+const { addContact } = require('../models/contacts');
 
-const addNewContact = async (req, res) => {
-    try {
+const addNewContact = catchAsync(async (req, res) => {
         const {error} = schema.validate(req.body);
         if(error) {
             return res.status(400).json({error});
         }
+        const { name, email, phone, favorite } = req.body;
+        const newContact = await addContact({name, email, phone, favorite});
 
-        const { name, email, phone } = req.body;
-        const newContacts = await addContact({name, email, phone,});
-
-        res.status(201).json(newContacts);
-    } catch (err) {
-        res.status(404).json('Not found');
-    }
-};
+        res.status(201).json(newContact);
+});
 
 module.exports = {
     addNewContact,
