@@ -1,7 +1,7 @@
 
 
-const { catchAsync } = require('../helpers/catchAsync');
-const { updateStatusContact } = require('../models/contacts');
+const { catchAsync } = require('../../helpers/catchAsync');
+const { updateStatusContact } = require('../../models/contacts');
 
 const updateStatus = catchAsync(async (req, res) => {
         const { contactId } = req.params;

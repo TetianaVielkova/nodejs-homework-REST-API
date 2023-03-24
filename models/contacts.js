@@ -1,11 +1,23 @@
 const Contact = require("./contactModel");
 
-async function getContacts() {
-    const contacts = await Contact.find({}).select("-__v");;
-    return contacts;
+async function getContacts(_id, page, limit, favorite) {
+    const skip = (page - 1) * limit; 
+
+    if (!favorite) {
+      return await Contact.find({ owner: _id }, "", {
+        skip: Number(skip),
+        limit: Number(limit),
+      }).select("-__v");
+    }
+
+    return await Contact.find({ owner: _id, favorite }, "", {
+      skip: Number(skip),
+      limit: Number(limit),
+    }).select("-__v");
   }
 
-async function getContactById(contactId) {
+
+async function getContactById(contactId, ) {
     const contact = await Contact.findById({_id: contactId});
     return contact;
 }
@@ -15,14 +27,14 @@ async function removeContact(contactId) {
     return deletedContact;
 }
 
-async function addContact({ name, email, phone, favorite }) {
-    const newContact = await Contact.create({name, email, phone, favorite});
+async function addContact({ name, email, phone, favorite,  _id}) {
+    const newContact = await Contact.create({name, email, phone, favorite, owner: _id});
     await newContact.save();
     return newContact;
 }
 
 const updateContact = async (contactId, { name, email, phone, favorite}) => {
-    const contactsUpdate = await Contact.findByIdAndUpdate({ _id: contactId }, { name, email, phone, favorite}, { new: true });
+    const contactsUpdate = await Contact.findOneAndUpdate({_id: contactId}, { name, email, phone, favorite}, { new: true });
     return contactsUpdate;
 };
 
