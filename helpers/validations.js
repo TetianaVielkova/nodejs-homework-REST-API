@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const schema = Joi.object({
+const schemaContact = Joi.object({
     name: Joi.string()
         .alphanum()
         .min(3)
@@ -16,7 +16,18 @@ const schema = Joi.object({
     favorite: Joi.boolean(),
 })
 
+const schemaUser = Joi.object({
+    email: Joi.string()
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+        .required(),
+    password: Joi.string()
+        // eslint-disable-next-line prefer-regex-literals
+        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+        .required(),
+})
+
 
 module.exports = {
-    schema,
+    schemaContact,
+    schemaUser,
 };
