@@ -1,6 +1,8 @@
 const { catchAsync } = require("../../helpers/catchAsync");
 const { schemaUser } = require("../../helpers/validations");
-const User = require("../../models/userModel")
+const User = require("../../models/userModel");
+const gravatar = require('gravatar');
+
 
 const registerController = catchAsync(async(req, res, next) => {
     const { email, password } = req.body
@@ -17,19 +19,20 @@ const registerController = catchAsync(async(req, res, next) => {
             data: 'Conflict',
     })
     }
-    try {
-        const newUser = new User({ email })
-        newUser.setPassword(password)
-        await newUser.save()
+        const avatarURL = gravatar.url(email, {s: '100', r: 'x', d: 'identicon'}, true);
+        const newUser = new User({ email, password, avatarURL });
+        newUser.setPassword(password);
+        console.log(newUser);
+        
+        await newUser.save();
+    
         res.status(201).json({
             "user" : {
                 "email": `${newUser.email}`,
-                "subscription": "starter"
+                "avatarURL": `${newUser.avatarURL}`,
+                "subscription": "starter",
             }
         })
-    } catch (error) {
-        next(error)
-    }
 })
 
 module.exports = {
