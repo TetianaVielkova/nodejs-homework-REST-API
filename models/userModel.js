@@ -27,16 +27,6 @@ const userSchema = new Schema(
 )
 
 
-userSchema.pre('save', async function(next) {
-    if (this.isNew) {
-        const emailHash = crypto.createHash('md5').update(this.email).digest('hex');
-
-        this.avatar = `https://www.gravatar.com/avatar/${emailHash}.jpg?d=identicon`;
-    }
-    next();
-});
-
-
 userSchema.methods.setPassword = function(password) {
     this.password = bCrypt.hashSync(password, bCrypt.genSaltSync(6));
 };
