@@ -37,7 +37,8 @@ const loginController = catchAsync(async (req, res) => {
             payload,
             "user": {
                 "email": `${user.email}`,
-                "subscription": "starter"
+                "subscription": "starter",
+                "avatarURL": `${user.avatarURL}`
             }
         },
     })

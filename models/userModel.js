@@ -1,5 +1,6 @@
 const { model, Schema } = require('mongoose');
 const bCrypt = require("bcryptjs");
+const crypto = require('crypto');
 
 const userSchema = new Schema(
     {
@@ -17,6 +18,7 @@ const userSchema = new Schema(
             enum: ["starter", "pro", "business"],
             default: "starter"
         },
+        avatarURL: String,
         token: {
             type: String,
             default: null,
@@ -27,11 +29,11 @@ const userSchema = new Schema(
 
 userSchema.methods.setPassword = function(password) {
     this.password = bCrypt.hashSync(password, bCrypt.genSaltSync(6));
-  };
-  
-  userSchema.methods.validPassword = function(password) {
+};
+
+userSchema.methods.validPassword = function(password) {
     return bCrypt.compareSync(password, this.password);
-  };
+};
 
 const User = model('user', userSchema);
 
