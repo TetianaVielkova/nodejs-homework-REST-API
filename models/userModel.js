@@ -1,6 +1,5 @@
 const { model, Schema } = require('mongoose');
 const bCrypt = require("bcryptjs");
-const crypto = require('crypto');
 
 const userSchema = new Schema(
     {
@@ -22,6 +21,14 @@ const userSchema = new Schema(
         token: {
             type: String,
             default: null,
+        },
+        verify: {
+            type: Boolean,
+            default: false,
+        },
+        verificationToken: {
+            type: String,
+            required: [true, 'Verify token is required'],
         },
     }
 )
