@@ -23,6 +23,11 @@ const loginController = catchAsync(async (req, res) => {
             data: 'Unauthorized',
         })
     }
+    if(!user.verify){
+        return res.status(401).json({
+            "message": "Email not verified",
+        })
+    }
 
     const payload = {
         id: user.id,

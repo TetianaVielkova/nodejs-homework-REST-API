@@ -2,7 +2,9 @@ const { catchAsync } = require("../../helpers/catchAsync");
 const { schemaUser } = require("../../helpers/validations");
 const User = require("../../models/userModel");
 const gravatar = require('gravatar');
+const { v4: uuidv4 } = require('uuid');
 
+const {sendEmail} = require('./../../helpers/sendEmails');
 
 const registerController = catchAsync(async(req, res, next) => {
     const { email, password } = req.body
@@ -19,12 +21,20 @@ const registerController = catchAsync(async(req, res, next) => {
             data: 'Conflict',
     })
     }
+
         const avatarURL = gravatar.url(email, {s: '100', r: 'x', d: 'identicon'}, true);
-        const newUser = new User({ email, password, avatarURL });
+        const verificationToken = uuidv4();
+        const newUser = new User({ email, password, avatarURL, verificationToken });
         newUser.setPassword(password);
-        console.log(newUser);
-        
         await newUser.save();
+
+        const verifyEmail = {
+            to: email,
+            subject: "Verify email",
+            html: `<a href="http://localhost:3000/api/users/verify/${verificationToken}" target="_blank">Click varify email</a>`
+        }
+
+        await sendEmail(verifyEmail);
     
         res.status(201).json({
             "user" : {
